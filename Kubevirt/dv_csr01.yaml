@@ -1,0 +1,14 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: csr01
+spec:
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  source:
+    http:
+      url: http://10.246.17.2:8080/csr1000v-universalk9.17.03.04a-serial.qcow2

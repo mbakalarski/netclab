@@ -1,0 +1,36 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: csr01
+  labels:
+    kubevirt.io/os: iosxe
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: csr01
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        devices:
+          # interfaces:
+          # - name: test1
+          #   bridge: {}
+          disks:
+          - disk:
+              bus: virtio
+            name: disk0
+        resources:
+          requests:
+            memory: 4Gi
+      volumes:
+      - name: disk0
+        persistentVolumeClaim:
+          claimName: csr01
+      # networks:
+      # - name: test1
+      #   multus:
+      #     default: true
+      #     networkName: bridge-test
