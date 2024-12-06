@@ -6,8 +6,8 @@ kind create cluster
 ```
 
 and follow the details from the folders:
-- Kubevirt/README_kubevirt.md
-- Kind/README_bridge_cni_for_kind.md
+- Kubevirt/README.md
+- Kind/README.md
 
 then:
 ```
