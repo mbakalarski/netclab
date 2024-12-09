@@ -1,0 +1,54 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: csr02
+spec:
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  source:
+    http:
+      url: http://10.246.17.2:8080/csr1000v-universalk9.17.03.04a-serial.qcow2
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: csr02
+  labels:
+    kubevirt.io/os: iosxe
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: csr02
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        devices:
+          interfaces:
+          - name: default
+            bridge: {}
+          - name: ge2
+            bridge: {}
+          disks:
+          - disk:
+              bus: virtio
+            name: disk0
+        resources:
+          requests:
+            memory: 4Gi
+      volumes:
+      - name: disk0
+        persistentVolumeClaim:
+          claimName: csr02
+      networks:
+      - name: default
+        pod: {}
+      - name: ge2
+        multus:
+          networkName: cni1

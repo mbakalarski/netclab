@@ -1,22 +1,24 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: csr01
+  name: sr01
   labels:
-    kubevirt.io/os: iosxe
+    kubevirt.io/os: srlinux
 spec:
   runStrategy: Always
   template:
     metadata:
       labels:
-        kubevirt.io/domain: csr01
+        kubevirt.io/domain: sr01
     spec:
       domain:
         cpu:
           cores: 2
         devices:
-          # interfaces:
-          # - name: test1
+          interfaces:
+          - name: default
+            bridge: {}
+          # - name: ge2
           #   bridge: {}
           disks:
           - disk:
@@ -27,10 +29,11 @@ spec:
             memory: 4Gi
       volumes:
       - name: disk0
-        persistentVolumeClaim:
-          claimName: csr01
-      # networks:
-      # - name: test1
+        containerDisk:
+          image: ghcr.io/nokia/srlinux:24.10.1
+      networks:
+      - name: default
+        pod: {}
+      # - name: ge2
       #   multus:
-      #     default: true
-      #     networkName: bridge-test
+      #     networkName: cni1

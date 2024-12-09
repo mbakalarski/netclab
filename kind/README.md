@@ -45,7 +45,4 @@ EOF
 docker cp kindnet_bridge.conflist kind-control-plane:/etc/cni/net.d/10-kindnet.conflist
 docker exec -ti kind-control-plane bash -c 'chown root:root /etc/cni/net.d/10-kindnet.conflist'
 docker exec -ti kind-control-plane bash -c 'chmod go-w /etc/cni/net.d/10-kindnet.conflist'
-
-    # docker exec -ti kind-control-plane bash -c 'apt-get -y update && apt-get -y install ethtool'
-    # docker exec -ti kind-control-plane bash -c 'ethtool --offload cni0 rx off tx off'
 ```

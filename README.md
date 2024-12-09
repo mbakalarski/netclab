@@ -1,24 +1,31 @@
 The idea is to set up a virtual testbed with mix of VM and container images, e.g. Cisco csr1000v and Juniper cSRX or Nokia SR Linux.
 
-Start with:
+#### Start with:
 ```
 kind create cluster
 ```
 
-and follow the details from the folders:
-- Kubevirt/README.md
-- Kind/README.md
+#### follow details in files:
+- kubevirt/README.md
+- kind/README.md
 
-then:
+
+#### Multus CNI:
 ```
-kubectl apply -f Kubevirt/dv_csr01.yaml
+kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+```
+
+#### VM images with http access:
+```
+docker run --name www -dt --mount type=bind,source=$HOME/images,target=/usr/share/nginx/html -p 8080:80 nginx:latest
+```
+
+#### then:
+```
+cd <Lab folder>
+kubectl apply -f .
 ```
 
 ```
-kubectl apply -f Kubevirt/vm_csr01.yaml
+virtctl console <router name>
 ```
-<br>
-<br>
-TODO:<br>
-- Multus and more networks/interfaces<br>
-- cSRX<br>
