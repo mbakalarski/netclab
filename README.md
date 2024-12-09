@@ -1,4 +1,4 @@
-The idea is to set up a network test environment and use common tools for VM and container images, such as the Cisco csr1000v VM image and the Juniper cSRX docker image.
+The idea is to set up a virtual testbed with mix of VM and container images, e.g. Cisco csr1000v and the Juniper cSRX.
 
 Start with:
 ```
