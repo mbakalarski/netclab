@@ -57,7 +57,7 @@ cd <Lab folder>
 kubectl apply -f .
 ```
 ```
-iptables -t nat -I POSTROUTING 1 -o cni<n> -j ACCEPT
+docker exec -ti kind-control-plane bash -c "iptables -t nat -I POSTROUTING 1 -o cni1 -j ACCEPT"
 ```
 
 #### Then:
