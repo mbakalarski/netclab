@@ -1,6 +1,6 @@
 The idea is to set up virtual testbed with mix of VM and container images, e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.
 
-#### Start with (or a little back):
+#### Start with:
 ```
 kind create cluster
 ```
