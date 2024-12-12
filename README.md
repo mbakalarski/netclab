@@ -19,7 +19,7 @@ kubectl apply -f .
 
 and modify a rule for each secondary network, e.g. cni1:
 ```
-docker exec -ti kind-control-plane bash -c "iptables -t nat -I POSTROUTING 1 -o cni1 -j ACCEPT"
+docker exec -ti vlab-control-plane bash -c "iptables -t nat -I POSTROUTING 1 -o cni1 -j ACCEPT"
 ```
 
 Then connect to console:
