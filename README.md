@@ -10,7 +10,7 @@ and VM images with http access, e.g.:
 docker run --name www -dt --mount type=bind,source=$HOME/images,target=/usr/share/nginx/html -p 8080:80 nginx:latest
 ```
 
-<br>
+
 To create topology:
 ```
 cd <Lab folder>
