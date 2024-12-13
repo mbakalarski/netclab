@@ -22,7 +22,7 @@ declare cluster_node="${cluster_name}-control-plane"
 
 
 log(){
-    d=$(date -Is)
+    local d=$(date -Is)
     local m="$1"
     local me=$(basename "$0")
     echo
@@ -94,3 +94,6 @@ do
     sleep 1
     timeout=$(($timeout-1))
 done
+
+log "Done"
+
