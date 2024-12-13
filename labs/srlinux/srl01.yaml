@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srl01
+  annotations:
+    k8s.v1.cni.cncf.io/networks: cni1
+spec:
+  containers:
+  - image: ghcr.io/nokia/srlinux:24.10.1
+    name: srl01
+    args:
+    - sudo
+    - bash
+    - /opt/srlinux/bin/sr_linux
+    securityContext:
+      privileged: true
+      runAsUser: 0
+      runAsGroup: 0
+    resources:
+      limits:
+        memory: 4Gi
+        cpu: 2000m

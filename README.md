@@ -27,3 +27,8 @@ Then connect to console:
 virtctl console <router name>
 ```
 *) virtctl - in KubeVirt project; easy installation
+
+or
+```
+kubectl exec -ti <router name> -- bash
+```
