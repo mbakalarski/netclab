@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: srl01
   annotations:
-    k8s.v1.cni.cncf.io/networks: cni1
+    k8s.v1.cni.cncf.io/networks: cni1@e1-1
 spec:
   containers:
   - image: ghcr.io/nokia/srlinux:24.10.1
@@ -20,3 +20,11 @@ spec:
       limits:
         memory: 4Gi
         cpu: 2000m
+    volumeMounts:
+      - mountPath: /tmp
+        name: hw
+        readOnly: true
+  volumes:
+  - configMap:
+      name: srl01-hw
+    name: hw

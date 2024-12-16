@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: srl01-hw
+data:
+  topology.yml: |-
+    # ixrd1
+    chassis_configuration:
+      "chassis_type": 64
+      "base_mac": 00:00:01:00:00:00
+      "cpm_card_type": 175
+
+    slot_configuration:
+      1:
+        "card_type": 175
+        "mda_type": 196
