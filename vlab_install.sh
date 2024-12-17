@@ -35,9 +35,11 @@ docker exec -ti $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-
 docker exec -ti $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 
-log "KubeVirt with nested virtualization"
+log "Check nested virtualization on k8s node"
 nested=$(docker exec -ti $cluster_node bash -c 'cat /sys/module/kvm_intel/parameters/nested | tr -d "\n"')
+echo "nested: ${nested}"
 if [[ ${nested} = "Y" ]]; then
+    log "KubeVirt with nested virtualization"
     unset version
     version=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
     kubectl create -f "https://github.com/kubevirt/kubevirt/releases/download/${version}/kubevirt-operator.yaml"
@@ -48,20 +50,19 @@ if [[ ${nested} = "Y" ]]; then
     log "Deploying, give me ${timeout}"
     kubectl -n kubevirt wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} kubevirts.kubevirt.io/kubevirt
     kubectl -n kubevirt get kubevirts.kubevirt.io/kubevirt
+
+    log "KubeVirt CDI"
+    unset version
+    version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubevirt/containerized-data-importer/releases/latest))
+    kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-operator.yaml
+    kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-cr.yaml
+
+    unset timeout
+    timeout=3m
+    log "Deploying, give me ${timeout}"
+    kubectl -n cdi wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} cdi/cdi
+    kubectl -n cdi get cdi/cdi
 fi
-
-
-log "KubeVirt CDI"
-unset version
-version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubevirt/containerized-data-importer/releases/latest))
-kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-operator.yaml
-kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-cr.yaml
-
-unset timeout
-timeout=3m
-log "Deploying, give me ${timeout}"
-kubectl -n cdi wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} cdi/cdi
-kubectl -n cdi get cdi/cdi
 
 
 log "Cluster bridge and /32 route in place of ptp and 0.0.0.0/0"
