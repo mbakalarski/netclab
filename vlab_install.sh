@@ -7,22 +7,49 @@
 set -e
 
 
+declare withkubevirt=true
+if [[ "$#" -eq 1 ]] && [[ ${1} = "nokubevirt" ]]; then withkubevirt=false; fi
+
 declare cluster_name="vlab"
 declare cluster_node="${cluster_name}-control-plane"
 
 
 log(){
-    local d=$(date -Is)
-    local m="$1"
+    local d="$(date -Is -u)"
+    local m="$*"
     local me=$(basename "$0")
     echo
     echo "${d} ${HOSTNAME} ${me}: ${m}"
 }
 
 
+wait_dir_has_file(){
+    local dirpath="$1"
+    local filename="$2"
+    local -i timeout=30
+    if [[ -n ${3} ]]; then timeout=${3}; fi
+    local -i c=0
+
+    log "Test ${filename} in ${dirpath}"
+
+    while [[ ${timeout} -ge 0 ]]
+    do
+        echo -n "${timeout} "
+        c=$(docker exec -ti $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename} | wc -l)
+        if [[ $c -eq 1 ]]; then break ;fi
+        sleep 1
+        timeout=$(($timeout-1))
+    done
+    log $(docker exec -ti $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename})
+}
+
+
 log "Kind cluster ${cluster_name}"
 kind delete cluster -n ${cluster_name}
 kind create cluster -n ${cluster_name}
+
+
+wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist" 20
 
 
 log "CNI plugins"
@@ -35,10 +62,13 @@ docker exec -ti $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-
 docker exec -ti $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 
-log "Check nested virtualization on k8s node"
-nested=$(docker exec -ti $cluster_node bash -c 'cat /sys/module/kvm_intel/parameters/nested | tr -d "\n"')
-echo "nested: ${nested}"
-if [[ ${nested} = "Y" ]]; then
+if ${withkubevirt}; then
+    log "Test nested virtualization on k8s node"
+    nested=$(docker exec -ti $cluster_node bash -c 'cat /sys/module/kvm_intel/parameters/nested | tr -d "\n"')
+    echo "nested: ${nested}"
+fi
+
+if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
     log "KubeVirt with nested virtualization"
     unset version
     version=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
@@ -73,18 +103,7 @@ docker exec -ti $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\
 
 log "Multus CNI"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf"
 
-declare -i c=0
-unset timeout
-timeout=30
-
-log "Deploying, give me ${timeout}s or less"
-until [[ $c -eq 1 ]] || [[ ${timeout} -le 0 ]]
-do
-    c=$(docker exec -ti $cluster_node bash -c "ls -lt /etc/cni/net.d/" | grep 00-multus.conf | wc -l)
-    sleep 1
-    timeout=$(($timeout-1))
-done
 
 log "Done"
-
