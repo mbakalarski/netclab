@@ -1,16 +1,25 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: srl01
+  name: srl02
   annotations:
     k8s.v1.cni.cncf.io/networks: cni1@e1-1
+  labels:
+    vendor: nokia
 spec:
   containers:
-  - image: ghcr.io/nokia/srlinux:24.10.1
-    name: srl01
+  - name: srl02
+    image: ghcr.io/nokia/srlinux:24.10.1
+    command:
+    - /tini
+    - --
+    - fixuid
+    - -q
+    - /entrypoint.sh
     args:
     - sudo
     - bash
+    - -c
     - /opt/srlinux/bin/sr_linux
     securityContext:
       privileged: true
@@ -21,10 +30,13 @@ spec:
         memory: 4Gi
         cpu: 2000m
     volumeMounts:
-      - mountPath: /tmp
+      - mountPath: /tmp/topology.yml
+        subPath: topology.yml
         name: hw
         readOnly: true
   volumes:
-  - configMap:
-      name: srl01-hw
-    name: hw
+  - name: hw
+    configMap:
+      name: srl02-hw
+      defaultMode: 292
+      optional: false
