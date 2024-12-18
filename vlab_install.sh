@@ -7,8 +7,9 @@
 set -e
 
 
-declare withkubevirt=true
+declare withkubevirt=false
 if [[ "$#" -eq 1 ]] && [[ ${1} = "nokubevirt" ]]; then withkubevirt=false; fi
+if [[ "$#" -eq 1 ]] && [[ ${1} = "kubevirt" ]]; then withkubevirt=true; fi
 
 declare cluster_name="vlab"
 declare cluster_node="${cluster_name}-control-plane"

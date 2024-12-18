@@ -7,7 +7,7 @@ These are really great tools.<br>
 Install kubectl and kind tool at first.<br><br>
 Run vLab installation script:
 ```
-./vlab_install.sh
+./vlab_install.sh [kubevirt|nokubevirt]
 ```
 Expose VM images via http access, e.g.:
 ```
@@ -18,7 +18,7 @@ docker run --name www -dt --mount type=bind,source=$HOME/images,target=/usr/shar
 To create topology:
 ```
 cd <Lab folder>
-kubectl apply -f .
+kubectl apply -f ./manifests/
 ```
 
 and modify a rule for each secondary network, e.g. cni1:
