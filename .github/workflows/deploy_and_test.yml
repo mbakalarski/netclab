@@ -48,4 +48,4 @@ jobs:
     - name: Pod status
       run: |
         export ROUTERS=("srl01" "srl02")
-        for router in $(ROUTERS[@]); do kubectl get pod ${router}; done
+        for router in ${ROUTERS[@]}; do kubectl get pod ${router}; done
