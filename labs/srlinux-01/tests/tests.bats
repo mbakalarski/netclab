@@ -11,6 +11,16 @@ setup_file() {
 
 setup() {
     kubectl wait --for=jsonpath='{.status.phase}'=Running --timeout=30s pod/${router}
+
+    timeout=30
+    while [[ ${timeout} -ge 0 ]]
+    do
+        log=$(kubectl logs ${router} | grep "aaa_mgr is running" || true)
+        if [[ $log =~ "aaa_mgr is running" ]]; then break; fi
+        sleep 1
+        timeout=$(($timeout-1))
+    done
+
     basedir="labs/srlinux-01"
     kubectl cp "${basedir}/tests/mgmt_config.cli" "${router}:/mgmt_config.cli"
     kubectl exec "$router" -- sr_cli source /mgmt_config.cli

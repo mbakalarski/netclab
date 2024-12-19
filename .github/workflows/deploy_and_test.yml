@@ -33,9 +33,6 @@ jobs:
     - name: Install vLab
       run: ./vlab_install.sh nokubevirt
 
-    # - name: Deploy srlinux lab
-    #   run: kubectl apply -f labs/srlinux-01/manifests/ && kubectl wait --for=jsonpath='{.status.phase}'=Running --timeout=30s pod/srl01
-
     - name: Install bats
       run: sudo apt-get -y install bats
 
@@ -44,8 +41,3 @@ jobs:
         export TERM=dumb
         export ROUTERS=("srl01" "srl02")
         for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
-
-    # - name: Pod status
-    #   run: |
-    #     export ROUTERS=("srl01" "srl02")
-    #     for router in ${ROUTERS[@]}; do kubectl get pod ${router}; done
