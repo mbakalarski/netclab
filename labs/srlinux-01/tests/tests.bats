@@ -9,7 +9,7 @@ setup() {
     echo "setup $router"
 }
 
-@test "ping to mgmt success" {
+@test "ping to mgmt $router success" {
     # ip=$(kubectl exec -ti ${router} -- bash -c 'ip netns exec srbase-mgmt ip -br addr show dev mgmt0.0' | awk '{printf $3}' | awk -F'/' '{printf $1}')
     # run ping -c3 ${ip}
     run echo "test $router"

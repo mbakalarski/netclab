@@ -18,4 +18,5 @@ jobs:
     - name: Run tests
       run: |
         export TERM=dumb
-        router="srl01" bats labs/srlinux-01/tests/tests.bats
+        export ROUTERS=("srl01" "srl02")
+        for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
