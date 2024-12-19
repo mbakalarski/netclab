@@ -1,0 +1,17 @@
+name: test
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install bats
+      run: sudo apt install bats
+
+    - name: Run tests
+      run: |
+        export TERM=dumb
+        bats labs/srlinux-01/tests/tests.bats
