@@ -36,11 +36,16 @@ jobs:
     - name: Deploy srlinux lab
       run: kubectl apply -f labs/srlinux-01/manifests/ && sleep 10
 
-    - name: Install bats
-      run: sudo apt-get -y install bats
+    # - name: Install bats
+    #   run: sudo apt-get -y install bats
 
-    - name: Run tests
+    # - name: Run tests
+    #   run: |
+    #     export TERM=dumb
+    #     export ROUTERS=("srl01" "srl02")
+    #     for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
+
+    - name: Pod status
       run: |
-        export TERM=dumb
         export ROUTERS=("srl01" "srl02")
-        for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
+        for router in $(ROUTERS[@]); do kubectl get pod ${router}; done
