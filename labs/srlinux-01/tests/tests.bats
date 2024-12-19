@@ -12,13 +12,13 @@ setup_file() {
 
     timeout=240
 
-    while [[ ${timeout} -ge 0 ]]
-    do
-        log=$(kubectl logs ${router} | grep "radius_mgr is running") || true
-        if [[ $log =~ "radius_mgr is running" ]]; then break; fi
-        sleep 1
-        timeout=$(($timeout-1))
-    done
+    # while [[ ${timeout} -ge 0 ]]
+    # do
+    #     log=$(kubectl logs ${router} | grep "radius_mgr is running") || true
+    #     if [[ $log =~ "radius_mgr is running" ]]; then break; fi
+    #     sleep 1
+    #     timeout=$(($timeout-1))
+    # done
 
     while [[ ${timeout} -ge 0 ]]
     do
