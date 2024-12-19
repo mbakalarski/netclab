@@ -13,7 +13,7 @@ jobs:
       run: |
         sudo apt-get -y update
         sudo apt-get -y install snap
-        sudo snap install kubectl
+        sudo snap install kubectl --classic
       
     - name: Install kind
       run: |
