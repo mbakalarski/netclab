@@ -4,6 +4,7 @@
 setup_file() {
     basedir="labs/srlinux-01"
     kubectl apply -f ${basedir}/manifests/
+    sleep 10
     sudo ip route del 10.244.0.0/24 || true
     sudo ip route add 10.244.0.0/24 via 172.18.0.2
 }
