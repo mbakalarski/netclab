@@ -36,12 +36,12 @@ wait_dir_has_file(){
     while [[ ${timeout} -ge 0 ]]
     do
         echo -n "${timeout} "
-        c=$(docker exec -ti $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename} | wc -l)
+        c=$(docker exec -t $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename} | wc -l)
         if [[ $c -eq 1 ]]; then break ;fi
         sleep 1
         timeout=$(($timeout-1))
     done
-    log $(docker exec -ti $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename})
+    log $(docker exec -t $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename})
 }
 
 
@@ -56,16 +56,16 @@ wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist" 20
 log "CNI plugins"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/containernetworking/plugins/releases/latest))
-docker exec -ti $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz.sha256"
-docker exec -ti $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz"
-docker exec -ti $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${version}.tgz.sha256"
-docker exec -ti $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz"
-docker exec -ti $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
+docker exec -t $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz.sha256"
+docker exec -t $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz"
+docker exec -t $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${version}.tgz.sha256"
+docker exec -t $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz"
+docker exec -t $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 
 if ${withkubevirt}; then
     log "Test nested virtualization on k8s node"
-    nested=$(docker exec -ti $cluster_node bash -c 'cat /sys/module/kvm_intel/parameters/nested | tr -d "\n"')
+    nested=$(docker exec -t $cluster_node bash -c 'cat /sys/module/kvm_intel/parameters/nested | tr -d "\n"')
     echo "nested: ${nested}"
 fi
 
@@ -97,9 +97,9 @@ fi
 
 
 log "Cluster bridge and /32 route in place of ptp and 0.0.0.0/0"
-docker exec -ti $cluster_node bash -c "sed -i 's#ptp#bridge#' /etc/cni/net.d/10-kindnet.conflist"
-docker exec -ti $cluster_node bash -c "sed -i 's#0.0.0.0/0#10.246.17.2/32#' /etc/cni/net.d/10-kindnet.conflist"
-docker exec -ti $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
+docker exec -t $cluster_node bash -c "sed -i 's#ptp#bridge#' /etc/cni/net.d/10-kindnet.conflist"
+docker exec -t $cluster_node bash -c "sed -i 's#0.0.0.0/0#10.246.17.2/32#' /etc/cni/net.d/10-kindnet.conflist"
+docker exec -t $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
 
 
 log "Multus CNI"
