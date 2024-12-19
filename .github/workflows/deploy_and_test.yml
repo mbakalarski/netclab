@@ -34,7 +34,7 @@ jobs:
       run: ./vlab_install.sh nokubevirt
 
     - name: Deploy srlinux lab
-      run: kubectl apply -f labs/srlinux-01/manifests/
+      run: kubectl apply -f labs/srlinux-01/manifests/ && sleep 10
 
     - name: Install bats
       run: sudo apt-get -y install bats
