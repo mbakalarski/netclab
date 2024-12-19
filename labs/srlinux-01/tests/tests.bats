@@ -2,15 +2,15 @@
 
 
 setup_file() {
-    # basedir="labs/srlinux-01"
-    # kubectl apply -f ${basedir}/manifests/
-    # sleep 10
+    basedir="labs/srlinux-01"
+    kubectl apply -f ${basedir}/manifests/
     sudo ip route del 10.244.0.0/24 || true
     sudo ip route add 10.244.0.0/24 via 172.18.0.2
 }
 
 
 setup() {
+    kubectl wait --for=jsonpath='{.status.phase}'=Running --timeout=30s pod/${router}
     basedir="labs/srlinux-01"
     kubectl cp "${basedir}/tests/mgmt_config.cli" "${router}:/mgmt_config.cli"
     kubectl exec "$router" -- sr_cli source /mgmt_config.cli
