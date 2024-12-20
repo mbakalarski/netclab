@@ -34,7 +34,7 @@ jobs:
       run: ./vlab_install.sh nokubevirt
 
     # - name: Install bats
-    #   run: sudo apt-get -y install bats
+    #   run: sudo apt-get -y update && sudo apt-get -y install bats
 
     # - name: Run tests
     #   run: |

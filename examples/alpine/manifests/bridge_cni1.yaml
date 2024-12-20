@@ -4,13 +4,17 @@ metadata:
   name: cni1
 spec:
   config: '{
-      "cniVersion": "0.4.0",
+      "cniVersion": "0.3.1",
       "name": "cni1",
       "plugins": [
         {
           "type": "bridge",
           "bridge": "cni1",
           "ipam": {}
+        },
+        {
+          "type": "accept-bridge",
+          "name": "cni1"
         }
       ]
     }'
