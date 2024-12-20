@@ -21,10 +21,8 @@ cd <Lab folder>
 kubectl apply -f ./manifests/
 ```
 
-and modify a rule for each secondary network, e.g. cni1:
-```
-docker exec -ti vlab-control-plane bash -c "iptables -t nat -I POSTROUTING 1 -o cni1 -j ACCEPT"
-```
+and use CNI ```accept-bridge``` for each secondary network.
+
 
 Then connect to console:
 ```

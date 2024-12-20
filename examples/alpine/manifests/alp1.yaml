@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alp1
+  annotations:
+    k8s.v1.cni.cncf.io/networks: cni1@eth1,cni2@eth2
+spec:
+  containers:
+  - args:
+    - sh
+    - -c
+    - sleep inf
+    image: alpine:latest
+    name: alp1
+    resources:
+      limits:
+        cpu: 200m
+        memory: 500Mi

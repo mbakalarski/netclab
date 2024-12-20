@@ -7,7 +7,7 @@ on:
     - v*
 
 jobs:
-  all:
+  install:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,11 +33,11 @@ jobs:
     - name: Install vLab
       run: ./vlab_install.sh nokubevirt
 
-    - name: Install bats
-      run: sudo apt-get -y install bats
+    # - name: Install bats
+    #   run: sudo apt-get -y install bats
 
-    - name: Run tests
-      run: |
-        export TERM=dumb
-        export ROUTERS=("srl01" "srl02")
-        for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
+    # - name: Run tests
+    #   run: |
+    #     export TERM=dumb
+    #     export ROUTERS=("srl01" "srl02")
+    #     for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done

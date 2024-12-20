@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e
+
+cnilog="/var/log/cni.log"
+cniconfig=$(cat /dev/stdin)
+
+log(){
+  echo "$(date -Is -u) $*" >>  $cnilog
+}
+
+log $CNI_COMMAND
+log $cniconfig
+
+bridge=$(echo $cniconfig | jq -r ".name")
+cniVersion=$(echo $cniconfig | jq -r ".cniVersion")
+
+case $CNI_COMMAND in
+ADD)
+  {
+    flock 9
+    iptables -t nat -C POSTROUTING -o "$bridge" -j ACCEPT || iptables -t nat -I POSTROUTING 1 -o "$bridge" -j ACCEPT
+  } 9>/tmp/cni-accept-bridge.lock
+  
+  output_template='
+	{
+	  "cniVersion": "%s",
+	  "interfaces": [
+	      {
+	          "name": "%s",
+	          "sandbox": "%s"
+	      }
+	  ]
+	}'
+  output=$(printf "$output_template" "$cniVersion" "$CNI_IFNAME" "$CNI_NETNS")
+  echo "$output"
+;;
+
+DEL)
+  iptables -t nat -D POSTROUTING -o "$bridge" -j ACCEPT || true
+;;
+
+CHECK)
+;;
+
+VERSION)
+;;
+
+*)
+  exit 1
+;;
+
+esac
