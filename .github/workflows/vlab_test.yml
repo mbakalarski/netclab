@@ -38,5 +38,4 @@ jobs:
 
     - name: Run tests
       run: |
-        # export TERM=dumb
         ROUTER=srl01 bats -t examples/srlinux-01/tests/srlinux.bats
