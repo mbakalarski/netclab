@@ -11,7 +11,7 @@ spec:
         storage: 10Gi
   source:
     http:
-      url: http://10.246.17.2:8080/csr1000v-universalk9.17.03.04a-serial.qcow2
+      url: http://172.18.0.1:8080/csr1000v-universalk9.17.03.04a-serial.qcow2
 ---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine

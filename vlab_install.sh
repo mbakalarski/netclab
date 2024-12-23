@@ -108,7 +108,7 @@ fi
 
 log "Cluster bridge and /32 route in place of ptp and 0.0.0.0/0"
 docker exec $cluster_node bash -c "sed -i 's#ptp#bridge#' /etc/cni/net.d/10-kindnet.conflist"
-docker exec $cluster_node bash -c "sed -i 's#0.0.0.0/0#10.246.17.2/32#' /etc/cni/net.d/10-kindnet.conflist"
+docker exec $cluster_node bash -c "sed -i 's#0.0.0.0/0#172.18.0.1/32#' /etc/cni/net.d/10-kindnet.conflist"
 docker exec $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
 
 
