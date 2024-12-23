@@ -3,10 +3,8 @@ The idea is to set up virtual testbed with mix of VM and container images,<br>
 e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.<br>
 I've used KubeVirt for unified control plane and Multus to have more interfaces in virtual routers.<br>
 
-Install docker, kubectl and kind tool at first, e.g.
-```
-sudo apt -y update && sudo apt -y install podman-docker
-```
+Install docker at first.<br>
+Then install kubectl and kind tool, e.g.
 ```
 curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x ./kubectl
