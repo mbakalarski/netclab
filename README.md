@@ -6,7 +6,11 @@ I've used KubeVirt for unified control plane and Multus to have more interfaces 
 Install kubectl and kind tool at first.<br><br>
 Run vLab installation script:
 ```
-bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") [kubevirt|nokubevirt]
+bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") kubevirt
+```
+or
+```
+bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") nokubevirt
 ```
 Expose VM images via http access, e.g.:
 ```
