@@ -62,6 +62,7 @@ docker exec $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${v
 docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz"
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
+log "custom CNI plugin"
 docker cp cni/accept-bridge ${cluster_node}:/opt/cni/bin/accept-bridge
 docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/accept-bridge"
 docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/accept-bridge"
