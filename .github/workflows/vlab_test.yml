@@ -27,8 +27,11 @@ jobs:
         chmod +x ./kind
         sudo mv ./kind /usr/local/bin/kind
 
+    - name: Check out code
+      uses: actions/checkout@v4
+
     - name: Install vLab
-      run: bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") nokubevirt
+      run: ./vlab_install.sh nokubevirt
 
     - name: Install bats
       run: sudo apt-get -y update && sudo apt-get -y install bats
