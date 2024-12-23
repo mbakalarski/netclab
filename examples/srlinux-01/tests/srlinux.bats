@@ -33,7 +33,7 @@ setup_file() {
 }
 
 
-function teardown_file() {
+teardown_file() {
     for manifest in ${manifests[@]}; do
         kubectl delete -f ${basedir}/manifests/${manifest}
     done
