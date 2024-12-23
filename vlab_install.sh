@@ -63,7 +63,8 @@ docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linu
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 log "custom CNI plugin"
-docker cp cni/accept-bridge ${cluster_node}:/opt/cni/bin/accept-bridge
+cniplugin="cni/accept-bridge" && [[ -f "$cniplugin" ]] || curl -LOs "https://raw.githubusercontent.com/mbakalarski/vLab/main/cni/accept-bridge" && cniplugin="accept-bridge"
+docker cp "$cniplugin" ${cluster_node}:/opt/cni/bin/accept-bridge
 docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/accept-bridge"
 docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/accept-bridge"
 
