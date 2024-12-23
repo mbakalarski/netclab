@@ -7,7 +7,7 @@ on:
     - v*
 
 jobs:
-  test:
+  deploy-test:
     runs-on: ubuntu-latest
 
     steps:
