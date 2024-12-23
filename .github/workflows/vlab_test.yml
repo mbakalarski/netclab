@@ -1,13 +1,13 @@
-name: deploy and test
+name: vlab
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   push:
     tags:
     - v*
 
 jobs:
-  install:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,11 +33,10 @@ jobs:
     - name: Install vLab
       run: ./vlab_install.sh nokubevirt
 
-    # - name: Install bats
-    #   run: sudo apt-get -y update && sudo apt-get -y install bats
+    - name: Install bats
+      run: sudo apt-get -y update && sudo apt-get -y install bats
 
-    # - name: Run tests
-    #   run: |
-    #     export TERM=dumb
-    #     export ROUTERS=("srl01" "srl02")
-    #     for router in ${ROUTERS[@]}; do router="$router" bats labs/srlinux-01/tests/tests.bats; done
+    - name: Run tests
+      run: |
+        # export TERM=dumb
+        ROUTER=srl01 bats -t examples/srlinux-01/tests/srlinux.bats

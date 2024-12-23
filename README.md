@@ -2,7 +2,6 @@
 The idea is to set up virtual testbed with mix of VM and container images,<br>
 e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.<br>
 I've used KubeVirt for unified control plane and Multus to have more interfaces in virtual routers.<br>
-These are really great tools.<br>
 
 Install kubectl and kind tool at first.<br><br>
 Run vLab installation script:
