@@ -40,4 +40,4 @@ jobs:
 
     - name: Run tests
       run: |
-        bats -t examples/srlinux-01/tests/srlinux.bats
+        ROUTER="srl01" bats -t examples/srlinux/tests/one.bats

@@ -1,10 +1,8 @@
 #!/usr/bin/env bats
 
 
-ROUTER="srl01"
-
-basedir="examples/srlinux-01"
-manifests=("bridge_cni1.yaml" "srl01_hw.yaml" "srl01.yaml")
+basedir="examples/srlinux"
+manifests=("bridge_*.yaml" "${ROUTER}_hw.yaml" "${ROUTER}.yaml")
 
 
 setup_file() {
