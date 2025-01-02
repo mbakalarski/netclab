@@ -9,8 +9,10 @@ setup_file() {
     for manifest in ${manifests[@]}; do
         kubectl apply -f "${basedir}/manifests/${manifest}"
     done
-    sudo ip route del 10.244.0.0/24 || true
-    sudo ip route add 10.244.0.0/24 via 172.18.0.2
+    podCIDR=$(kubectl get nodes vlab-control-plane -o jsonpath='{.spec.podCIDR}')
+    node_address=$(kubectl get nodes vlab-control-plane -o jsonpath='{.status.addresses[0].address}')
+    sudo ip route del ${podCIDR} || true
+    sudo ip route add ${podCIDR} via ${node_address}
 
     kubectl wait --for=jsonpath='{.status.phase}'=Running --timeout=240s pod/${ROUTER}
 
@@ -20,7 +22,8 @@ setup_file() {
     do
         echo "# ${timeout} " >&3
         ip=$(kubectl exec ${ROUTER} -- bash -c 'ip netns exec srbase-mgmt ip -br addr show dev mgmt0.0' | awk '{printf $3}' | awk -F'/' '{printf $1}') || true
-        if [[ $ip =~ "10.244" ]]; then break; fi
+        pod_prefix=$(echo ${podCIDR} | awk -F'.' -e '{printf $1"."$2"."$3}')
+        if [[ $ip =~ "$pod_prefix" ]]; then break; fi
         sleep 1
         timeout=$(($timeout-1))
     done

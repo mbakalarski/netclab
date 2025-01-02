@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
+set -e
+
+
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/metallb/metallb/releases/latest))
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${version}/config/manifests/metallb-native.yaml
 
@@ -17,7 +20,7 @@ EOF
 
 
 timeout=3m
-log "Deploying, give me ${timeout}"
+log "Deploying, give me ${timeout}" || echo "Deploying, give me ${timeout}"
 kubectl -n metallb-system wait --for=jsonpath='{.status.numberReady}'=1 --timeout=${timeout} daemonset.apps/speaker
 
 
