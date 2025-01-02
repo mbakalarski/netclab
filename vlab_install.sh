@@ -1,10 +1,10 @@
 #!/bin/bash
-################################################################################
-#
-# Copyright (c) 2024 mbakalarski
-#
-################################################################################
+
+
 set -e
+
+
+DIR=$(dirname "$(realpath $0)")
 
 
 declare withkubevirt=false
@@ -53,13 +53,19 @@ kind create cluster -n ${cluster_name}
 wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist"
 
 
+log "LoadBalancer"
+cd "${DIR}/loadbalancer/"
+source ./metallb.sh
+cd ${DIR}
+
+
 log "CNI plugins"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/containernetworking/plugins/releases/latest))
 docker exec $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz.sha256"
 docker exec $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz"
 docker exec $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${version}.tgz.sha256"
-docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz"
+docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz ./bridge"
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 log "custom CNI plugin"
