@@ -112,9 +112,10 @@ if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
 fi
 
 
-log "Cluster bridge and /32 route in place of ptp and 0.0.0.0/0"
+log "Cluster bridge and private routes in place of ptp and 0.0.0.0/0"
 docker exec $cluster_node bash -c "sed -i 's#ptp#bridge#' /etc/cni/net.d/10-kindnet.conflist"
-docker exec $cluster_node bash -c "sed -i 's#0.0.0.0/0#172.18.0.1/32#' /etc/cni/net.d/10-kindnet.conflist"
+docker exec $cluster_node bash -c 'jq ".plugins[0].ipam.routes = [{\"dst\": \"10.0.0.0/8\"},{\"dst\": \"172.16.0.0/12\"},{\"dst\": \"192.168.0.0/16\"}]" /etc/cni/net.d/10-kindnet.conflist > tmp.json'
+docker exec $cluster_node bash -c 'mv tmp.json /etc/cni/net.d/10-kindnet.conflist'
 docker exec $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
 
 
