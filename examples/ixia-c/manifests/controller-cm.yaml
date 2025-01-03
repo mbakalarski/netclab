@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: ixia-c
+  name: ixia-c-controller-config
+data:
+  config.yaml: |
+    location_map:
+    - location: veth1
+      endpoint: otg-port-1.default.svc.cluster.local:5555+otg-port-1.default.svc.cluster.local:50071
+    - location: veth2
+      endpoint: otg-port-2.default.svc.cluster.local:5555+otg-port-2.default.svc.cluster.local:50071

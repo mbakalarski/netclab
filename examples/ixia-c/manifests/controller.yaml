@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: otg-controller
+  labels:
+    app: ixia-c
+    role: controller
+spec:
+  containers:
+    - name: keng-controller
+      image: ghcr.io/open-traffic-generator/keng-controller:latest
+      args:
+        - --accept-eula
+        - --debug
+      volumeMounts:
+        - mountPath: /home/ixia-c/controller/config
+          name: config
+          readOnly: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+    - name: otg-gnmi-server
+      image: ghcr.io/open-traffic-generator/otg-gnmi-server:latest
+      args:
+        - -http-server
+        - https://localhost:8443
+        - --debug
+      ports:
+        - containerPort: 50051
+          name: gnmi-port
+          protocol: TCP
+      resources:
+        limits:
+          cpu: 100m
+          memory: 250Mi
+  restartPolicy: Always
+  volumes:
+    - configMap:
+        defaultMode: 420
+        name: ixia-c-controller-config
+      name: config

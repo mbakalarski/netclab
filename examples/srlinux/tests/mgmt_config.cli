@@ -6,6 +6,6 @@ set / network-instance mgmt static-routes route 172.16.0.0/12 next-hop-group NH-
 set / network-instance mgmt static-routes route 192.168.0.0/16 admin-state enable
 set / network-instance mgmt static-routes route 192.168.0.0/16 next-hop-group NH-1
 set / network-instance mgmt next-hop-groups group NH-1 admin-state enable
-set / network-instance mgmt next-hop-groups group NH-1 nexthop 1 ip-address 10.244.0.1
+set / network-instance mgmt next-hop-groups group NH-1 nexthop 1 ip-address 10.10.0.254
 delete / system grpc-server mgmt default-tls-profile
 commit now
