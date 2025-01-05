@@ -94,7 +94,7 @@ docker exec $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${v
 docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz ./bridge"
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
-# log "custom CNI plugin"
+log "custom CNI plugin"
 # if [[ -f "cni/accept-bridge" ]]; then
 #     cniplugin="cni/accept-bridge"
 # else
