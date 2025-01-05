@@ -1,9 +1,0 @@
-resources:
-  - metallb.yaml
-patches:
-  - target:
-      group: metallb.io
-      version: v1beta1
-      kind: IPAddressPool
-      name: lbpool
-    path: patch.yaml

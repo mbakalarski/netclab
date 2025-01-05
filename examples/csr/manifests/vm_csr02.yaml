@@ -51,4 +51,4 @@ spec:
         pod: {}
       - name: ge2
         multus:
-          networkName: cni1
+          networkName: cni2
