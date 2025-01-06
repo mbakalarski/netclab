@@ -37,7 +37,7 @@ cd <Lab folder>
 kubectl apply -f ./manifests/
 ```
 
-and use CNI ```accept-bridge``` for each secondary network.
+and use CNI ```accept-bridge``` for secondary network.
 
 
 Then connect to console:
