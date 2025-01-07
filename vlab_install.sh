@@ -28,17 +28,19 @@ wait_dir_has_file(){
     if [[ -n ${3} ]]; then timeout=${3}; fi
     local -i c=0
 
-    log "Test ${filename} in ${dirpath}"
+    log "Test ${filename} in ${dirpath}; timeout ${timeout}"
 
     while [[ ${timeout} -ge 0 ]]
     do
-        echo -n "${timeout} "
+        # echo -n "${timeout} "
+        echo -n "."
         c=$(docker exec $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename} | wc -l)
         if [[ $c -eq 1 ]]; then break ;fi
         sleep 1
         timeout=$(($timeout-1))
     done
-    log $(docker exec $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename})
+    echo
+    docker exec $cluster_node bash -c "ls -lt ${dirpath}${filename}"
 }
 
 
@@ -50,9 +52,10 @@ kind create cluster -n ${cluster_name}
 wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist"
 
 
-log "LoadBalancer"
+# log "LoadBalancer"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/metallb/metallb/releases/latest))
+log "LoadBalancer ${version}"
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${version}/config/manifests/metallb-native.yaml
 
 unset timeout; timeout=3m
@@ -85,9 +88,10 @@ spec:
 EOT
 
 
-log "CNI plugins"
+# log "CNI plugins"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/containernetworking/plugins/releases/latest))
+log "CNI plugins ${version}"
 docker exec $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz.sha256"
 docker exec $cluster_node bash -c "curl -LOs https://github.com/containernetworking/plugins/releases/download/${version}/cni-plugins-linux-amd64-${version}.tgz"
 docker exec $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${version}.tgz.sha256"
@@ -106,9 +110,10 @@ if ${withkubevirt}; then
 fi
 
 if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
-    log "KubeVirt with nested virtualization"
+    # log "KubeVirt with nested virtualization"
     unset version
     version=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
+    log "KubeVirt ${version}"
     kubectl create -f "https://github.com/kubevirt/kubevirt/releases/download/${version}/kubevirt-operator.yaml"
     kubectl create -f "https://github.com/kubevirt/kubevirt/releases/download/${version}/kubevirt-cr.yaml"
 
@@ -118,9 +123,10 @@ if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
     kubectl -n kubevirt wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} kubevirts.kubevirt.io/kubevirt
     kubectl -n kubevirt get kubevirts.kubevirt.io/kubevirt
 
-    log "KubeVirt CDI"
+    # log "KubeVirt CDI"
     unset version
     version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubevirt/containerized-data-importer/releases/latest))
+    log "KubeVirt CDI ${version}"
     kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-operator.yaml
     kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$version/cdi-cr.yaml
 
@@ -139,7 +145,10 @@ fi
 # docker exec $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
 
 
-log "Multus CNI"
+# log "Multus CNI"
+unset version
+version=$(basename $(curl -s -w %{redirect_url} "https://github.com/k8snetworkplumbingwg/multus-cni/releases/latest"))
+log "Multus ${version}"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
 wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf"
 
