@@ -99,7 +99,7 @@ docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linu
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 log "custom CNI plugin"
-docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/accept-bridge https://raw.githubusercontent.com/mbakalarski/vLab/main/cni/accept-bridge"
+docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/accept-bridge https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/accept-bridge"
 docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/accept-bridge"
 docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/accept-bridge"
 
@@ -154,7 +154,7 @@ wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf"
 
 
 log "Multus default-network"
-kubectl apply -f "https://raw.githubusercontent.com/mbakalarski/vLab/main/cni/multus-default.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/mbakalarski/vLab/main/config/multus-default.yaml"
 
 
 log "Done"
