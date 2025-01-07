@@ -31,7 +31,7 @@ spec:
           cores: 2
         devices:
           interfaces:
-          - name: default
+          - name: ge1
             bridge: {}
           - name: ge2
             bridge: {}
@@ -47,8 +47,10 @@ spec:
         persistentVolumeClaim:
           claimName: csr01
       networks:
-      - name: default
-        pod: {}
+      - name: ge1
+        multus:
+          default: true
+          networkName: kube-system/cni1
       - name: ge2
         multus:
           networkName: cni2

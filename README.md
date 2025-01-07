@@ -44,7 +44,7 @@ Then connect to console:
 ```
 virtctl console <router name>
 ```
-*) virtctl - in KubeVirt project; easy installation
+<small>*) virtctl - KubeVirt project; easy installation</small>
 
 and/or for containerized router:
 ```
