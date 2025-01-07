@@ -55,7 +55,7 @@ wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist"
 # log "LoadBalancer"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/metallb/metallb/releases/latest))
-log "LoadBalancer ${version}"
+log "MetalLB ${version}"
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${version}/config/manifests/metallb-native.yaml
 
 unset timeout; timeout=3m
