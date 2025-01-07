@@ -32,7 +32,6 @@ wait_dir_has_file(){
 
     while [[ ${timeout} -ge 0 ]]
     do
-        # echo -n "${timeout} "
         echo -n "."
         c=$(docker exec $cluster_node bash -c "ls -lt ${dirpath}" | grep ${filename} | wc -l)
         if [[ $c -eq 1 ]]; then break ;fi
@@ -52,7 +51,6 @@ kind create cluster -n ${cluster_name}
 wait_dir_has_file "/etc/cni/net.d/" "10-kindnet.conflist"
 
 
-# log "LoadBalancer"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/metallb/metallb/releases/latest))
 log "MetalLB ${version}"
@@ -88,7 +86,6 @@ spec:
 EOT
 
 
-# log "CNI plugins"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/containernetworking/plugins/releases/latest))
 log "CNI plugins ${version}"
@@ -110,7 +107,6 @@ if ${withkubevirt}; then
 fi
 
 if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
-    # log "KubeVirt with nested virtualization"
     unset version
     version=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
     log "KubeVirt ${version}"
@@ -123,7 +119,6 @@ if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
     kubectl -n kubevirt wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} kubevirts.kubevirt.io/kubevirt
     kubectl -n kubevirt get kubevirts.kubevirt.io/kubevirt
 
-    # log "KubeVirt CDI"
     unset version
     version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubevirt/containerized-data-importer/releases/latest))
     log "KubeVirt CDI ${version}"
@@ -145,7 +140,6 @@ fi
 # docker exec $cluster_node bash -c "sed -i 's#bridge\"#bridge\", \"isGateway\": true, \"isDefaultGateway\": false#' /etc/cni/net.d/10-kindnet.conflist"
 
 
-# log "Multus CNI"
 unset version
 version=$(basename $(curl -s -w %{redirect_url} "https://github.com/k8snetworkplumbingwg/multus-cni/releases/latest"))
 log "Multus ${version}"
