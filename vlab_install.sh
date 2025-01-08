@@ -43,6 +43,14 @@ wait_dir_has_file(){
 }
 
 
+custom_cni_plugin(){
+  log "custom CNI plugin $1"
+  docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/accept-bridge https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/${1}"
+  docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/${1}"
+  docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/${1}"
+}
+
+
 log "Kind cluster ${cluster_name}"
 kind delete cluster -n ${cluster_name}
 kind create cluster -n ${cluster_name}
@@ -95,10 +103,10 @@ docker exec $cluster_node bash -c "sha256sum --check cni-plugins-linux-amd64-${v
 docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linux-amd64-${version}.tgz ./bridge"
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
-log "custom CNI plugin"
-docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/accept-bridge https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/accept-bridge"
-docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/accept-bridge"
-docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/accept-bridge"
+
+custom_cni_plugin accept-bridge
+custom_cni_plugin pod2pod
+
 
 if ${withkubevirt}; then
     log "Test nested virtualization on k8s node"
