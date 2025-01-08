@@ -153,7 +153,7 @@ unset version
 version=$(basename $(curl -s -w %{redirect_url} "https://github.com/k8snetworkplumbingwg/multus-cni/releases/latest"))
 log "Multus ${version}"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
-wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf"
+wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf" 120
 
 
 log "Multus default-network"
