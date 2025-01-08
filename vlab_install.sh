@@ -104,8 +104,8 @@ docker exec $cluster_node bash -c "cd /opt/cni/bin && tar xvzf /cni-plugins-linu
 docker exec $cluster_node bash -c "rm /cni-plugins-linux-amd64-${version}.tgz"
 
 
-custom_cni_plugin accept-bridge
-custom_cni_plugin pod2pod
+custom_cni_plugin "accept-bridge"
+custom_cni_plugin "pod2pod"
 
 
 if ${withkubevirt}; then
