@@ -6,10 +6,10 @@ cnilog="/var/log/cni.log"
 input=$(cat /dev/stdin)
 
 log() {
-  echo "$(date -Is -u) $(basename $0) $*" >> $cnilog
+  echo "$(date -Is -u) $0 $*" >> $cnilog
 }
 
-$netns="$(basename $CNI_NETNS)"
+netns="$(echo $0 | awk -F'/' '{printf $NF}')"
 
 case $CNI_COMMAND in
 ADD)
