@@ -8,9 +8,13 @@ spec:
       "name": "cni2",
       "plugins": [
         {
-          "name": "cni2",
-          "type": "ptp",
+          "type": "bridge",
+          "bridge": "cni2",
           "ipam": {}
+        },
+        {
+          "type": "accept-bridge",
+          "name": "cni2"
         }
       ]
     }'

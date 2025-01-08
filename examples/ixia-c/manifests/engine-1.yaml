@@ -3,8 +3,8 @@ kind: Pod
 metadata:
   name: otg-port-1
   annotations:
-    v1.multus-cni.io/default-network: cni1
-    k8s.v1.cni.cncf.io/networks: cni2@veth1
+    v1.multus-cni.io/default-network: cni1@eth0
+    k8s.v1.cni.cncf.io/networks: cni3@eth1
   labels:
     app: ixia-c
     role: port-1
@@ -14,7 +14,11 @@ spec:
       image: ghcr.io/open-traffic-generator/ixia-c-traffic-engine:latest
       env:
         - name: ARG_IFACE_LIST
-          value: virtual@af_packet,veth1
+          value: virtual@af_packet,eth1
+        
+        - name: WAIT_FOR_IFACE
+          value: "Yes"
+
         - name: OPT_NO_HUGEPAGES
           value: "Yes"
         - name: OPT_ADAPTIVE_CPU_USAGE
@@ -33,7 +37,7 @@ spec:
       image: ghcr.io/open-traffic-generator/ixia-c-protocol-engine:latest
       env:
         - name: INTF_LIST
-          value: veth1
+          value: eth1
       securityContext:
         privileged: true
       resources:
