@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+cnilog="/var/log/cni.log"
+input=$(cat /dev/stdin)
+
+log() {
+  echo "$(date -Is -u) $(basename $0) $*" >> $cnilog
+}
+
+$netns="$(basename $CNI_NETNS)"
+
+case $CNI_COMMAND in
+ADD)
+  {
+    flock 9
+    ip link add p1 type veth peer name p2 || true
+    ip link set p1 netns "$netns" || ip link set p2 netns "$netns"
+    ip netns exec "$netns" ip link set p1 name "$CNI_IFNAME" || ip netns exec "$netns" ip link set p2 name "$CNI_IFNAME"
+    ip netns exec "$netns" ip link set up name "$CNI_IFNAME"
+  } 9>/tmp/cni-pod2pod.lock
+
+  output_template='
+	{
+	  "cniVersion": "%s",
+	  "interfaces": [
+	      {
+	          "name": "%s",
+	          "sandbox": "%s"
+	      }
+	  ]
+	}'
+
+  cniVersion=$(echo $input | jq -r ".cniVersion")
+
+  output=$(printf "$output_template" "$cniVersion" "$CNI_IFNAME" "$netns")
+  log "output $output"
+  echo "$output"
+;;
+DEL)
+  ip netns exec "$netns" ip link del "$CNI_IFNAME" || true
+;;
+*)
+  exit 1
+;;
+esac
