@@ -2,16 +2,20 @@
 
 set -e
 
-cnilog="/var/log/cni.log"
-input=$(cat /dev/stdin)
-
-filename="$(echo $0 | awk -F'/' '{printf $NF}')"
 
 log() {
+  local filename="$(echo $0 | awk -F'/' '{printf $NF}')"
   echo "$(date -Is -u) $filename $*" >> $cnilog
 }
 
+
+cnilog="/var/log/cni.log"
+input=$(cat /dev/stdin)
 netns="$(echo $CNI_NETNS | awk -F'/' '{printf $NF}')"
+
+
+log "$CNI_COMMAND $cniconfig"
+
 
 case $CNI_COMMAND in
 ADD)
@@ -37,7 +41,6 @@ ADD)
   cniVersion=$(echo $input | jq -r ".cniVersion")
 
   output=$(printf "$output_template" "$cniVersion" "$CNI_IFNAME" "$netns")
-  log "output $output"
   echo "$output"
 ;;
 DEL)
