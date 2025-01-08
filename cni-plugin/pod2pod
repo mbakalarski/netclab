@@ -5,11 +5,13 @@ set -e
 cnilog="/var/log/cni.log"
 input=$(cat /dev/stdin)
 
+filename="$(echo $0 | awk -F'/' '{printf $NF}')"
+
 log() {
-  echo "$(date -Is -u) $0 $*" >> $cnilog
+  echo "$(date -Is -u) $filename $*" >> $cnilog
 }
 
-netns="$(echo $0 | awk -F'/' '{printf $NF}')"
+netns="$(echo $CNI_NETNS | awk -F'/' '{printf $NF}')"
 
 case $CNI_COMMAND in
 ADD)
