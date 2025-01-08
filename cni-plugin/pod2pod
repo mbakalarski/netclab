@@ -14,7 +14,7 @@ input=$(cat /dev/stdin)
 netns="$(echo $CNI_NETNS | awk -F'/' '{printf $NF}')"
 
 
-log "$CNI_COMMAND $cniconfig"
+log "$CNI_COMMAND $input"
 
 
 case $CNI_COMMAND in
