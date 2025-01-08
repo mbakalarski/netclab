@@ -44,10 +44,11 @@ wait_dir_has_file(){
 
 
 custom_cni_plugin(){
-  log "custom CNI plugin $1"
-  docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/accept-bridge https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/${1}"
-  docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/${1}"
-  docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/${1}"
+  local plugin="$1"
+  log "custom CNI plugin ${plugin}"
+  docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/${plugin} https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/${plugin}"
+  docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/${plugin}"
+  docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/${plugin}"
 }
 
 
