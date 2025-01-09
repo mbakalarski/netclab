@@ -8,11 +8,7 @@ spec:
       "name": "cni3",
       "plugins": [
         {
-          "type": "ptp",
-          "ipam": {
-            "type": "host-local",
-            "subnet": "192.168.1.0/24"
-          }
+          "type": "pod2pod"
         }
       ]
     }'

@@ -1,7 +1,7 @@
 alias otgen="${HOME}/ixia-c/otgen/otgen"
 export OTG_API="https://$(kubectl get svc otg-controller -o jsonpath='{.status.loadBalancer.ingress[].ip}'):8443"
 
-curl -sk "${OTG_API}/config"
+# curl -sk "${OTG_API}/config"
 
 export OTG_LOCATION_P1="p1"
 export OTG_LOCATION_P2="p2"
