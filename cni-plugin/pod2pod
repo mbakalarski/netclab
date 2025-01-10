@@ -2,22 +2,16 @@
 
 set -e
 
-# cnilog="/var/log/cni.log"
-# log() {
-#   echo "$(date -Is -u) $*" >> $cnilog
-# }
 
+DEBUG="false"
 
-# input=$(cat /dev/stdin)
-# cniVersion=$(echo $input | jq -r ".cniVersion")
-# pluginName=$(echo $input | jq -r ".type")
-# netName=$(echo $input | jq -r ".name")
+(! eval $DEBUG ) || cnilog="/var/log/cni.log"
+(! eval $DEBUG ) || log() { echo "$(date -Is -u) $*" >> $cnilog; }
 
+input=$(cat /dev/stdin)
+cniVersion=$(echo $input | awk -F ',' '{ for (i=1; i<=NF; i++) { if($i ~ /"cniVersion":/) printf $i } }' | awk -F':' '{printf $2}' | tr -d '"{}')
+netName=$(echo $input | awk -F ',' '{ for (i=1; i<=NF; i++) { if($i ~ /"name":/) printf $i } }' | awk -F':' '{printf $2}' | tr -d '"{}')
 netns="$(echo $CNI_NETNS | awk -F'/' '{printf $NF}')"
-
-# k8s_pod_name=$(echo ${CNI_ARGS} | awk -F';' '{ for(i=1; i<=NF; i++) { if($i ~ /K8S_POD_NAME=/) printf $i } }')
-# k8s_namespace=$(echo ${CNI_ARGS} | awk -F';' '{ for(i=1; i<=NF; i++) { if($i ~ /K8S_POD_NAMESPACE=/) printf $i } }')
-
 
 
 case $CNI_COMMAND in
@@ -25,10 +19,15 @@ case $CNI_COMMAND in
 ADD)
   {
     flock 9
-    # log "$pluginName $CNI_COMMAND $k8s_namespace $k8s_pod_name IFNAME=${CNI_IFNAME} NETNAME=${netName}"
-    ip link add pod2pod-p1 type veth peer name pod2pod-p2 || true
-    ip link set pod2pod-p1 netns "$netns" || ip link set pod2pod-p2 netns "$netns"
-    ip netns exec "$netns" ip link set pod2pod-p1 name "$CNI_IFNAME" || ip netns exec "$netns" ip link set pod2pod-p2 name "$CNI_IFNAME"
+
+    p1="${netName}-p1"
+    p2="${netName}-p2"
+
+    (! eval $DEBUG ) || log "$CNI_COMMAND $CNI_ARGS"
+
+    ip link add ${p1} type veth peer name ${p2} || true
+    ip link set ${p1} netns "$netns" || ip link set ${p2} netns "$netns"
+    ip netns exec "$netns" ip link set ${p1} name "$CNI_IFNAME" || ip netns exec "$netns" ip link set ${p2} name "$CNI_IFNAME"
     ip netns exec "$netns" ip link set up name "$CNI_IFNAME"
   } 9>/tmp/cni-pod2pod.lock
 
@@ -43,13 +42,12 @@ ADD)
 	  ]
 	}'
 
-  cniVersion="0.3.1"
   output=$(printf "$output_template" "$cniVersion" "$CNI_IFNAME" "$netns")
   echo "$output"
 ;;
 
 DEL)
-  # log "$pluginName $CNI_COMMAND $k8s_namespace $k8s_pod_name IFNAME=${CNI_IFNAME} NETNAME=${netName}"
+  (! eval $DEBUG ) || log "$CNI_COMMAND $CNI_ARGS"
   ip netns exec "$netns" ip link del "$CNI_IFNAME" || true
 ;;
 
