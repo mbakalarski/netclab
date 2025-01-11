@@ -3,27 +3,32 @@
 set -e
 
 
-DEBUG="false"
+DEBUG=false
 
-(! eval $DEBUG ) || cnilog="/var/log/cni.log"
-(! eval $DEBUG ) || log() { echo "$(date -Is -u) $*" >> $cnilog; }
+log() {
+  if ${DEBUG}; then
+    cnilog="/var/log/cni.log"
+    echo "$(date -Is -u) $*" >> $cnilog
+  fi
+}
 
-input=$(cat /dev/stdin)
-cniVersion=$(echo $input | awk -F ',' '{ for (i=1; i<=NF; i++) { if($i ~ /"cniVersion":/) printf $i } }' | awk -F':' '{printf $2}' | tr -d '"{}')
-netName=$(echo $input | awk -F ',' '{ for (i=1; i<=NF; i++) { if($i ~ /"name":/) printf $i } }' | awk -F':' '{printf $2}' | tr -d '"{}')
+
 netns="$(echo $CNI_NETNS | awk -F'/' '{printf $NF}')"
 
 
 case $CNI_COMMAND in
 
 ADD)
+  input=$(cat /dev/stdin)
+  cniVersion=$(echo $input | jq -r '.cniVersion')
+  netName=$(echo $input | jq -r '.name')
+
   {
     flock 9
-
     p1="${netName}-p1"
     p2="${netName}-p2"
 
-    (! eval $DEBUG ) || log "$CNI_COMMAND $CNI_ARGS"
+    log "$CNI_COMMAND $CNI_ARGS"
 
     ip link add ${p1} type veth peer name ${p2} || true
     ip link set ${p1} netns "$netns" || ip link set ${p2} netns "$netns"
@@ -47,7 +52,7 @@ ADD)
 ;;
 
 DEL)
-  (! eval $DEBUG ) || log "$CNI_COMMAND $CNI_ARGS"
+  log "$CNI_COMMAND $CNI_ARGS"
   ip netns exec "$netns" ip link del "$CNI_IFNAME" || true
 ;;
 
