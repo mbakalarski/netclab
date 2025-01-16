@@ -1,7 +1,8 @@
 ### netclab
-NETwork Containerized LAB is a tool to set up virtual testbed with mix of VM and container images,<br>
-e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.<br>
-I've used KubeVirt for unified control plane and Multus to have more interfaces in virtual routers.<br>
+NETwork Containerized LAB is a tool for running testbeds with mix of VM and container images, e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.<br>
+It is based on kind Kubernetes cluster.
+Network topologies are defined via k8s manifest files.<br>
+KubeVirt is used for VM support and Multus to have more network interfaces.<br>
 
 Install docker at first.<br>
 Then install kubectl and kind tool, e.g.
