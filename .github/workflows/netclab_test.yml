@@ -1,4 +1,4 @@
-name: vlab
+name: netclab
 
 on:
   workflow_dispatch:
@@ -30,8 +30,8 @@ jobs:
         chmod +x ./kind
         sudo mv ./kind /usr/local/bin/kind
 
-    - name: Install vLab
-      run: bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") nokubevirt
+    - name: Install netclab
+      run: bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab_install.sh") nokubevirt
 
     - name: Install bats
       run: sudo apt-get -y update && sudo apt-get -y install bats

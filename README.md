@@ -1,5 +1,5 @@
-### vLab
-The idea is to set up virtual testbed with mix of VM and container images,<br>
+### netclab
+NETwork Containerized LAB is a tool to set up virtual testbed with mix of VM and container images,<br>
 e.g. Cisco csr1000v and Juniper cRPD or Nokia SR Linux.<br>
 I've used KubeVirt for unified control plane and Multus to have more interfaces in virtual routers.<br>
 
@@ -17,13 +17,13 @@ chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 ```
 <br><br>
-Run vLab installation script:
+Run netclab installation script:
 ```
-bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") kubevirt
+bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab_install.sh") kubevirt
 ```
 or
 ```
-bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/vLab/main/vlab_install.sh") nokubevirt
+bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab_install.sh") nokubevirt
 ```
 Expose VM images via http access, e.g.:
 ```

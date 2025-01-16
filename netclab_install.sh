@@ -8,7 +8,7 @@ declare withkubevirt=false
 if [[ "$#" -eq 1 ]] && [[ ${1} = "nokubevirt" ]]; then withkubevirt=false; fi
 if [[ "$#" -eq 1 ]] && [[ ${1} = "kubevirt" ]]; then withkubevirt=true; fi
 
-declare cluster_name="vlab"
+declare cluster_name="netclab"
 declare cluster_node="${cluster_name}-control-plane"
 
 
@@ -40,7 +40,7 @@ wait_dir_has_file(){
 custom_cni_plugin(){
   local plugin="$1"
   log "custom CNI plugin ${plugin}"
-  docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/${plugin} https://raw.githubusercontent.com/mbakalarski/vLab/main/cni-plugin/${plugin}"
+  docker exec $cluster_node bash -c "curl -Ls -o /opt/cni/bin/${plugin} https://raw.githubusercontent.com/mbakalarski/netclab/main/cni-plugin/${plugin}"
   docker exec $cluster_node bash -c "chown root:root /opt/cni/bin/${plugin}"
   docker exec $cluster_node bash -c "chmod +x /opt/cni/bin/${plugin}"
 }
@@ -144,7 +144,7 @@ wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf" 120
 
 
 log "Multus default-network"
-kubectl apply -f "https://raw.githubusercontent.com/mbakalarski/vLab/main/config/multus-default.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/mbakalarski/netclab/main/config/multus-default.yaml"
 
 
 log "Done"
