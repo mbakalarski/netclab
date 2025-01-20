@@ -11,10 +11,6 @@ spec:
           "type": "bridge",
           "bridge": "cni2",
           "ipam": {}
-        },
-        {
-          "type": "accept-bridge",
-          "name": "cni2"
         }
       ]
     }'
