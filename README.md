@@ -12,6 +12,7 @@ chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 ```
 ```
+unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubernetes-sigs/kind/releases/latest))
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/${version}/kind-linux-amd64
 chmod +x ./kind
@@ -41,10 +42,15 @@ kubectl apply -f ./manifests/
 
 Then connect to console:
 ```
+unset version
+version=$(kubectl get kubevirt.kubevirt.io/kubevirt -n kubevirt -o=jsonpath="{.status.observedKubeVirtVersion}")
+curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/${version}/virtctl-${version}-linux-amd64
+chmod +x virtctl
+sudo mv ./virtctl /usr/local/bin/virtctl
+```
+```
 virtctl console <router name>
 ```
-<small>*) virtctl - KubeVirt project; easy installation</small>
-
 and/or for containerized router:
 ```
 kubectl exec -ti <router name> -- bash
