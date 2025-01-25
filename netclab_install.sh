@@ -109,7 +109,9 @@ if ${withkubevirt}; then
     echo "nested: ${nested}"
 fi
 
-if ${withkubevirt} && [[ ${nested} = "Y" ]]; then
+running_in_vm=false; if grep -i hypervisor /proc/cpuinfo > /dev/null; then running_in_vm=true; fi
+
+if ${withkubevirt} && ( ! ${running_in_vm} || [[ ${nested} = "Y" ]] ); then
     unset version
     version=$(curl -s https://storage.googleapis.com/kubevirt-prow/release/kubevirt/kubevirt/stable.txt)
     log "KubeVirt ${version}"
