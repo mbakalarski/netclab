@@ -31,7 +31,7 @@ jobs:
         sudo mv ./kind /usr/local/bin/kind
 
     - name: Install netclab
-      run: bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab_install.sh") nokubevirt
+      run: bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab-kind.sh") nokubevirt
 
     - name: Install bats
       run: sudo apt-get -y update && sudo apt-get -y install bats
