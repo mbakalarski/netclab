@@ -51,11 +51,10 @@ minikube delete -p ${cluster_name}
 minikube start -p ${cluster_name} \
   --extra-config=kubelet.cpu-manager-reconcile-period="10s" \
   --extra-config=kubelet.cpu-manager-policy="static" \
-  --extra-config=kubelet.kube-reserved="cpu=500m,memory=500Mi" \
+  --extra-config=kubelet.kube-reserved="cpu=500m,memory=2000Mi" \
   --extra-config=kubelet.feature-gates="CPUManager=true" \
-  --extra-config=kubelet.housekeeping-interval="10s"
-
-minikube addons enable metrics-server -p ${cluster_name}
+  --extra-config=kubelet.housekeeping-interval="10s" \
+  --memory="max" --cpus="max"
 
 
 wait_dir_has_file "/etc/cni/net.d/" "conflist"
