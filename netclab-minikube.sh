@@ -48,8 +48,10 @@ custom_cni_plugin(){
 
 log "k8s cluster ${cluster_name}"
 minikube delete -p ${cluster_name}
-# minikube start -p ${cluster_name} --feature-gates=CPUManager=true,CPUManagerPolicyOptions=true --extra-config=kubelet.cpuManagerPolicy=static
-minikube start -p ${cluster_name} --feature-gates=CPUManager=true,CPUManagerPolicyOptions=true
+minikube start -p ${cluster_name} \
+  --extra-config=kubelet.cpu-manager-policy="static" \
+  --extra-config=kubelet.kube-reserved="cpu=500m" \
+  --extra-config=kubelet.feature-gates="CPUManager=true" 
 
 
 wait_dir_has_file "/etc/cni/net.d/" "conflist"
@@ -64,7 +66,7 @@ unset timeout; timeout=3m
 log "Deploying, give me ${timeout}"
 kubectl -n metallb-system wait --for=jsonpath='{.status.numberReady}'=1 --timeout=${timeout} daemonset.apps/speaker
 
-unset k8s_netname; k8s_netname="netclab"
+unset k8s_netname; k8s_netname="${cluster_name}"
 k8s_subnet=$(docker network inspect ${k8s_netname} --format json | jq -r .[].IPAM.Config[].Subnet | grep -v \: | awk -F'/' '{printf $1}')
 unset prefix; prefix=$(echo "${k8s_subnet}" | awk -F'.' -e '{printf $1"."$2"."$3}')
 
@@ -92,7 +94,7 @@ EOT
 
 
 log "Install jq for custom CNI plugins"
-docker exec $cluster_node bash -c "apt-get -y update && apt-get -y install jq"
+docker exec $cluster_node bash -c "apt-get -qy update 2>/dev/null && apt-get -qy install jq 2>/dev/null"
 custom_cni_plugin "accept-bridge"
 custom_cni_plugin "pod2pod"
 
