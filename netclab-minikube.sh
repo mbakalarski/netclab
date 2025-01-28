@@ -49,9 +49,13 @@ custom_cni_plugin(){
 log "k8s cluster ${cluster_name}"
 minikube delete -p ${cluster_name}
 minikube start -p ${cluster_name} \
+  --extra-config=kubelet.cpu-manager-reconcile-period="10s" \
   --extra-config=kubelet.cpu-manager-policy="static" \
-  --extra-config=kubelet.kube-reserved="cpu=500m" \
-  --extra-config=kubelet.feature-gates="CPUManager=true" 
+  --extra-config=kubelet.kube-reserved="cpu=500m,memory=500Mi" \
+  --extra-config=kubelet.feature-gates="CPUManager=true" \
+  --extra-config=kubelet.housekeeping-interval="10s"
+
+minikube addons enable metrics-server -p ${cluster_name}
 
 
 wait_dir_has_file "/etc/cni/net.d/" "conflist"
