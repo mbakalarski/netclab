@@ -134,6 +134,11 @@ if ${withkubevirt} && ( ! ${running_in_vm} || [[ ${nested} = "Y" ]] ); then
     log "Deploying, give me ${timeout}"
     kubectl -n cdi wait --for=jsonpath='{.status.phase}'=Deployed --timeout=${timeout} cdi/cdi
     kubectl -n cdi get cdi/cdi
+
+    kubectl -n kubevirt patch kubevirts.kubevirt.io kubevirt --type='json' \
+      -p='[{"op": "add", "path": "/spec/configuration/developerConfiguration", "value": { "featureGates": [ ] } }]'
+    kubectl -n kubevirt patch kubevirts.kubevirt.io kubevirt --type='json' \
+      -p='[{"op": "add", "path": "/spec/configuration/developerConfiguration/featureGates/0", "value":"CPUManager"}]'
 fi
 
 
@@ -141,7 +146,7 @@ unset version
 version=$(basename $(curl -s -w %{redirect_url} "https://github.com/k8snetworkplumbingwg/multus-cni/releases/latest"))
 log "Multus ${version}"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
-wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf" 120
+wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf" 240
 
 
 log "Multus default-network"
