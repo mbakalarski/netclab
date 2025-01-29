@@ -5,7 +5,7 @@ Network topologies are defined via k8s manifest files.<br>
 KubeVirt is used for VM support and Multus to have more network interfaces.<br>
 
 ## Prerequisites
-Linux host or VM with docker (rootless) installed.<br>
+Linux host or VM with docker installed.<br>
 
 ## Tool installation
 Install kubectl and minikube or kind tool, e.g.
