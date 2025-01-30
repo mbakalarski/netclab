@@ -95,7 +95,7 @@ spec:
     - lbpool
 EOT
 
-# MetalLB is not adv. ((l2 proxy-arp) from control-plane nodes
+# MetalLB is not adv. (l2 proxy-arp) from control-plane nodes
 kubectl label nodes netclab 'node.kubernetes.io/exclude-from-external-load-balancers-'
 
 
