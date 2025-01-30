@@ -95,6 +95,9 @@ spec:
     - lbpool
 EOT
 
+# MetalLB is not adv. ((l2 proxy-arp) from control-plane nodes
+kubectl label nodes netclab 'node.kubernetes.io/exclude-from-external-load-balancers-'
+
 
 log "Install jq for custom CNI plugins"
 docker exec $cluster_node bash -c "apt-get -qy update 2>/dev/null && apt-get -qy install jq 2>/dev/null"
