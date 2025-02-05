@@ -70,8 +70,8 @@ log "Deploying, give me ${timeout}"
 kubectl -n metallb-system wait --for=jsonpath='{.status.numberReady}'=1 --timeout=${timeout} daemonset.apps/speaker
 
 unset k8s_netname; k8s_netname="${cluster_name}"
-k8s_subnet=$(docker network inspect ${k8s_netname} --format json | jq -r .[].IPAM.Config[].Subnet | grep -v \: | awk -F'/' '{printf $1}')
-unset prefix; prefix=$(echo "${k8s_subnet}" | awk -F'.' -e '{printf $1"."$2"."$3}')
+k8s_subnet=$(docker network inspect ${k8s_netname} | jq -r .[].IPAM.Config[].Subnet | grep -v \: | awk -F'/' '{printf $1}')
+unset prefix; prefix=$(echo "${k8s_subnet}" | awk -F'.' '{printf $1"."$2"."$3}')
 
 cat <<EOT | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
