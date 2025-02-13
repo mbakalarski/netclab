@@ -99,10 +99,11 @@ EOT
 kubectl label nodes netclab 'node.kubernetes.io/exclude-from-external-load-balancers-'
 
 
-# log "Install jq for custom CNI plugins"
-# docker exec $cluster_node bash -c "apt-get -qy update 2>/dev/null && apt-get -qy install jq 2>/dev/null"
+log "Install jq for custom CNI plugins"
+docker exec $cluster_node bash -c "apt-get -qy update 2>/dev/null && apt-get -qy install jq 2>/dev/null"
 # custom_cni_plugin "accept-bridge"
 # custom_cni_plugin "pod2pod"
+custom_cni_plugin "ipv6-bridge"
 
 
 if ${withkubevirt}; then
