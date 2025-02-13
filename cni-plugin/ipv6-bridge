@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -e
+
+
+DEBUG=false
+
+log(){
+  if ${DEBUG}; then
+    cnilog="/var/log/cni.log"
+    echo "$(date -Is -u) $*" >>  $cnilog
+  fi
+}
+
+input=$(cat /dev/stdin)
+log "INPUT: $input"
+bridge=$(echo $input | jq -r ".name")
+
+
+case $CNI_COMMAND in
+ADD)
+  log "CNI_COMMAND: $CNI_COMMAND"
+  log "CNI_ARGS: $CNI_ARGS"
+  log "CNI_IFNAME: $CNI_IFNAME"
+  
+  cniVersion=$(echo $input | jq -r ".cniVersion")
+  
+  {
+    flock 9
+    ip6tables -t filter -C DOCKER-USER -o "$bridge" -j ACCEPT || ip6tables -t filter -I DOCKER-USER 1 -o "$bridge" -j ACCEPT
+  } 9>/tmp/cni-ipv6-bridge.lock
+
+
+  output_template='
+	{
+	  "cniVersion": "%s",
+	  "interfaces": [
+	      {
+	          "name": "%s",
+	          "sandbox": "%s"
+	      }
+	  ]
+	}'
+  output=$(printf "$output_template" "$cniVersion" "$CNI_IFNAME" "$CNI_NETNS")
+  echo "$output"
+;;
+
+DEL)
+  log "CNI_COMMAND: $CNI_COMMAND"
+  log "CNI_ARGS: $CNI_ARGS"
+  log "CNI_IFNAME: $CNI_IFNAME"
+  
+  iptables -t filter -D DOCKER-USER -o "$bridge" -j ACCEPT || true
+;;
+
+CHECK)
+;;
+
+VERSION)
+;;
+
+*)
+  exit 1
+;;
+
+esac
