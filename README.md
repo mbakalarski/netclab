@@ -7,19 +7,14 @@ KubeVirt is used for VM support and Multus to have more network interfaces.<br>
 Linux host or VM with docker installed.<br>
 
 ## Tool installation
-Install kubectl and minikube or kind tool, e.g.
+Install kubectl and kind tool, e.g.
 ```
 curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 ```
 
-minikube:
-```
-curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
-```
-or kind:
+kind:
 ```
 unset version
 version=$(basename $(curl -s -w %{redirect_url} https://github.com/kubernetes-sigs/kind/releases/latest))
@@ -40,7 +35,7 @@ bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netc
 ```
 or
 ```
-bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab-minikube.sh")
+bash <(curl -Ls "https://raw.githubusercontent.com/mbakalarski/netclab/main/netclab-kind.sh") kubevirt
 ```
 with ```kubevirt``` arg for netclab with VM images.<br>
 
