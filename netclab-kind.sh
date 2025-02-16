@@ -142,6 +142,11 @@ unset version
 version=$(basename $(curl -s -w %{redirect_url} "https://github.com/k8snetworkplumbingwg/multus-cni/releases/latest"))
 log "Multus ${version}"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+
+unset timeout; timeout=5m
+log "Deploying, give me ${timeout}"
+kubectl -n kube-system wait --for=jsonpath='{.status.numberReady}'=1 --timeout=${timeout} daemonset.apps/kube-multus-ds
+
 wait_dir_has_file "/etc/cni/net.d/" "00-multus.conf" 120
 
 
