@@ -1,0 +1,6 @@
+apiVersion: v2
+name: netclab
+description: Helm chart for deploying network topologies using KubeVirt, Multus, and custom components
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
