@@ -8,8 +8,7 @@ metadata:
   name: {{ .name }}
   namespace: {{ $ns }}
 spec:
-  config: |
-    {
+  config: '{
       "cniVersion": "0.3.1",
       "name": "{{ .name }}"
       "plugins": [
@@ -19,7 +18,7 @@ spec:
           "ipam": {}
         }
       ]
-    }
+    }'
 {{- end }}
 
 {{- range .Values.topology.nodes }}
