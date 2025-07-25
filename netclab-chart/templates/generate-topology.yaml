@@ -11,7 +11,6 @@ spec:
   config: |
     {
       "cniVersion": "0.3.1",
-      "type": "{{ .type }}",
       "name": "{{ .name }}"
       "plugins": [
         {
