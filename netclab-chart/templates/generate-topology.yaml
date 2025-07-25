@@ -75,7 +75,7 @@ metadata:
   namespace: {{ $ns }}
   annotations:
     v1.multus-cni.io/default-network: b0
-    k8s.v1.cni.cncf.io/networks: {{- $nets := list -}}{{- range $index, $int := .interfaces -}}{{- $nets = append $nets (printf "%s@e1-%d" $int.network (add $index 1)) -}}{{- end }} {{ join "," $nets }}
+    k8s.v1.cni.cncf.io/networks: {{- $nets := list -}} {{- range .interfaces }} {{- $nets = append $nets (printf "%s@%s" .network .name) }} {{- end }} {{ join "," $nets }}
 spec:
   containers:
     - name: {{ .name }}
