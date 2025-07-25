@@ -1,19 +1,19 @@
 topology:
   namespace: srlab
-  
+
   networks:
-    - name: lan1
+    - name: b1
       type: bridge
-    - name: lan2
+    - name: b2
       type: bridge
 
   nodes:
     - name: srl01
       interfaces:
-        - name: eth1
-          network: lan1
-        - name: eth2
-          network: lan2
+        - name: e1-1
+          network: b1
+        - name: e1-2
+          network: b2
       config: |
         hw:
           chassis_type: ixr6
