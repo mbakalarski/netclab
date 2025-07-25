@@ -1,5 +1,41 @@
 {{- $ns := .Values.topology.namespace | default "default" }}
 
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: b0
+  namespace: kube-system
+spec:
+  config: '{
+      "cniVersion": "0.3.1",
+      "name": "b0",
+      "plugins": [
+        {
+          "type": "bridge",
+          "bridge": "b0",
+          "isGateway": true,
+          "isDefaultGateway": false,
+          "ipam": {
+            "type": "host-local",
+            "ranges": [
+              [
+                {
+                  "subnet": "10.0.0.0/24",
+                  "gateway": "10.0.0.254"
+                }
+              ]
+            ],
+            "routes": [
+              { "dst": "10.0.0.0/8" },
+              { "dst": "172.16.0.0/12" },
+              { "dst": "192.168.0.0/16" }
+            ]
+          }
+        }
+      ]
+    }'
+
 {{- range .Values.topology.networks }}
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
@@ -39,10 +75,8 @@ metadata:
   name: {{ .name }}
   namespace: {{ $ns }}
   annotations:
-    k8s.v1.cni.cncf.io/networks: |
-      {{- range $index, $int := .interfaces }}
-      - name: {{ $int.network }}@e1-{{ $index }}
-      {{- end }}
+    v1.multus-cni.io/default-network: b0
+    k8s.v1.cni.cncf.io/networks: {{- $nets := list -}}{{- range $index, $int := .interfaces -}}{{- $nets = append $nets (printf "%s@e1-%d" $int.network $index) -}}{{- end }} {{ join "," $nets }}
 spec:
   containers:
     - name: {{ .name }}
