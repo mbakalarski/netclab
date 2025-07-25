@@ -10,8 +10,6 @@ spec:
     plural: topologies
     singular: topology
     kind: Topology
-    shortNames:
-      - topo
   versions:
     - name: v1alpha1
       served: true
@@ -22,29 +20,10 @@ spec:
           properties:
             spec:
               type: object
+              required: [nodes, networks]
               properties:
                 namespace:
                   type: string
-                nodes:
-                  type: array
-                  items:
-                    type: object
-                    required: [name, template]
-                    properties:
-                      name:
-                        type: string
-                      template:
-                        type: string
-                      interfaces:
-                        type: array
-                        items:
-                          type: object
-                          required: [name, network]
-                          properties:
-                            name:
-                              type: string
-                            network:
-                              type: string
                 networks:
                   type: array
                   items:
@@ -59,4 +38,25 @@ spec:
                       parameters:
                         type: object
                         additionalProperties: true
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, interfaces]
+                    properties:
+                      name:
+                        type: string
+                      interfaces:
+                        type: array
+                        items:
+                          type: object
+                          required: [name, network]
+                          properties:
+                            name:
+                              type: string
+                            network:
+                              type: string
+                      config:
+                        type: string
+                        description: "Optional inline hw.yaml config"
 {{- end }}

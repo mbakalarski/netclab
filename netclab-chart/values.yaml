@@ -1,1 +1,20 @@
-topology: {}
+topology:
+  namespace: srlab
+  
+  networks:
+    - name: lan1
+      type: bridge
+    - name: lan2
+      type: bridge
+
+  nodes:
+    - name: srl01
+      interfaces:
+        - name: eth1
+          network: lan1
+        - name: eth2
+          network: lan2
+      config: |
+        hw:
+          chassis_type: ixr6
+          other_setting: true
