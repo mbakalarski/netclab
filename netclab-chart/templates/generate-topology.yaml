@@ -1,6 +1,3 @@
-{{- $ns := .Values.topology.namespace | default "default" }}
-
----
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
@@ -35,6 +32,8 @@ spec:
         }
       ]
     }'
+
+{{- $ns := .Values.topology.namespace | default "default" }}
 
 {{- range .Values.topology.networks }}
 ---
